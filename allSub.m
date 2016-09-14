@@ -6,8 +6,8 @@ addpath(genpath('~/Git/cnbi-smrtrain/'));
 lap = load('laplacian16.mat');
 lap = lap.lap;
 
-%Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/';
-Path = '~/Desktop/tst/';
+Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
+%Path = '~/Desktop/tst/';
 SavePath = '~/tmp/';
 
 SubDir = dir(Path);
