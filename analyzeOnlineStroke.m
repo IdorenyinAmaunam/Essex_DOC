@@ -2,9 +2,7 @@ function [RunResults] = analyzeOnlineStroke(FilePath, MATpath, lap, freqs)
 
 RunResults.fine = 1;
 try
-    
     [data, header] = sload(FilePath);
-
 catch
     disp(['Problem loading file, skipping: ' FilePath]);
     RunResults.fine = 0;
@@ -190,8 +188,14 @@ end
 RunResults.OnDetectionRate = 100*sum(maxI==Class)/size(actdata,1);
 
 % Simulated single-sample accuracy with same features
-fclass = classify(fdata,fdata,flbl);
-[~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
+try
+    fclass = classify(fdata,fdata,flbl);
+    [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
+catch
+    % Sometimes too selected features are too correlated for LDA, switch to Naive Bayes...
+    fclass = classify(fdata,fdata,flbl,'diaglinear');
+    [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
+end
 
 % % ERD/ERS
 mbase = zeros(23,16);
@@ -262,6 +266,11 @@ M0 = mean(Bdata0);
 C0 = cov(Bdata0);
 RunResults.SI = KLNormMulti(M1,C1,M0,C0);
 
-% Simulated single-sample accuracy with same features
-Bclass = classify(Bdata,Bdata,Blbl);
-[~, ~, RunResults.SimulatedAccBest] = eegc3_confusion_matrix(Blbl+1,Bclass+1);
+% Simulated single-sample accuracy with best features
+try
+    Bclass = classify(Bdata,Bdata,Blbl);
+    [~, ~, RunResults.SimulatedAccBest] = eegc3_confusion_matrix(Blbl+1,Bclass+1);
+catch
+    Bclass = classify(Bdata,Bdata,Blbl,'diaglinear');
+    [~, ~, RunResults.SimulatedAccBest] = eegc3_confusion_matrix(Blbl+1,Bclass+1);    
+end

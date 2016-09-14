@@ -7,6 +7,7 @@ lap = load('laplacian16.mat');
 lap = lap.lap;
 
 Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
+%Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
 %Path = '~/Desktop/tst/';
 SavePath = '~/tmp/';
 
@@ -16,13 +17,19 @@ isd = [SubDir(:).isdir];
 SubDir = SubDir(isd);
 
 for subject = 1:length(SubDir)
-    Acc= {};
-    TrAcc = {};
+    
     Sub = SubDir(subject).name;
     SubSes = dir([Path '/' Sub]);
     SubSes = SubSes(3:end);
     isd = [SubSes(:).isdir];
     SubSes = SubSes(isd);
+
+    % Save results file
+    if(~exist([SavePath '/' Sub],'dir'))
+        % Create subject's folder
+        mkdir(SavePath,Sub);
+        mkdir([SavePath '/' Sub],'excluded');
+    end
     
     onses = 0;
     for ses=1:length(SubSes)
@@ -60,33 +67,37 @@ for subject = 1:length(SubDir)
                         continue;
                     end
                     
-                    if(exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 0)
+                    if( (exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 0) && (exist([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'file') == 0))
                         RunResults = analyzeOnlineStroke(GDFPath,MATPath, lap, freqs);
+                        if(RunResults.fine == 1)
+                            save([SavePath Sub '/' GDFName(1:end-4) '.mat'],'RunResults');
+                        else
+                            % Save excluded dummy mat file
+                            save([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'RunResults');
+                            continue;
+                        end
                     else
-                        load([SavePath Sub '/' GDFName(1:end-4) '.mat']); 
+                        if(exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 2)
+                            load([SavePath Sub '/' GDFName(1:end-4) '.mat']);
+                        else
+                            % Faulty run saved, skip it
+                            continue;
+                        end
                     end
                     
-                    if(RunResults.fine == 1)
-                        % Save results file
-                        if(~exist([SavePath '/' Sub],'dir'))
-                            % Create subject's playback folder
-                            mkdir(SavePath,Sub);
-                        end
-
-                        run = run+1;
-
-                        disp(['Subject: ' Sub ' , Session: ' num2str(onses) ' , Run: ' num2str(run)]);
-
-                        save([SavePath Sub '/' GDFName(1:end-4) '.mat'],'RunResults');
-                        
-                    end
+                    disp(['Subject: ' Sub ' , Session: ' num2str(onses) ' , Run: ' num2str(run)]);
+                    run = run+1;
+                    % Fill in here
+                    
                 end
-                
                 fclose(fid);
-                
             end
         end
+        
+        % Session-wise
+        
     end
-    % Save concentrated subject results here
+    
+    % Subject-wise
     %save([SavePath Sub '/' Sub '_Acc.mat'],'Sum');
 end
