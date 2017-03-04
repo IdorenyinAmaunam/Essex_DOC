@@ -192,7 +192,7 @@ try
     fclass = classify(fdata,fdata,flbl);
     [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
 catch
-    % Sometimes too selected features are too correlated for LDA, switch to Naive Bayes...
+    % Sometimes selected features are too correlated for LDA, switch to Naive Bayes...
     fclass = classify(fdata,fdata,flbl,'diaglinear');
     [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
 end
@@ -215,6 +215,14 @@ for tr=1:size(trials,1)
     berds(tr,:,:) = (bactivity-bbaseline)./bbaseline;
     erdsdiff(tr,:,:) = (activity-baseline);
     berdsdiff(tr,:,:) = (bactivity-bbaseline);
+    % ERSP (ERSP-TB-Z, equations (7)-(10) in Single-Trial Normalization for Event-Related Spectral Decomposition Reduces Sensitivity to Noisy Trials)
+    base_ersp = bfeats(intersect(find(atrlbl==tr),find(albl==0)),:,:);
+    act_ersp = bfeats(intersect(find(atrlbl==tr),find(albl==1)),:,:);
+    m_base_ersp = squeeze(mean(base_ersp,1));
+    s_base_ersp = squeeze(std(base_ersp,1));
+    act_ersp_allsamples = (act_ersp - permute(repmat(m_base_ersp,1,1,size(act_ersp,1)),[3 1 2]))./permute(repmat(s_base_ersp,1,1,size(act_ersp,1)),[3 1 2]);
+    act_ersp_allsamples(act_ersp_allsamples>5)=NaN;
+    act_ersp_tr(tr,:,:) = squeeze(nanmean(act_ersp_allsamples));
 end
 mbase = mbase/size(trials,1);
 bmbase = bmbase/size(trials,1);
@@ -222,6 +230,7 @@ mact = mact/size(trials,1);
 bmact = bmact/size(trials,1);
 erdsavg = (mact-mbase)./mbase;
 berdsavg = (bmact-bmbase)./bmbase;
+ersp = squeeze(mean(act_ersp_tr,1))';
 
 RunResults.logERDS = squeeze(mean(erds,1));
 RunResults.ERDS = squeeze(mean(berds,1));
@@ -229,6 +238,7 @@ RunResults.logERDSd = squeeze(mean(erdsdiff,1));
 RunResults.ERDSd = squeeze(mean(berdsdiff,1));
 RunResults.logERDSa = erdsavg;
 RunResults.ERDSa = berdsavg;
+RunResults.ersp = ersp;
 
 FS = zeros(size(afeats,2),size(afeats,3));
 for f=1:size(afeats,2)

@@ -6,10 +6,14 @@ addpath(genpath('~/Git/cnbi-smrtrain/'));
 lap = load('laplacian16.mat');
 lap = lap.lap;
 
+lap64 = load('laplacian64HiAmp.mat');
+lap64 = lap64.lap.HiAmp64Mat;
+
 Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
+%Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
 %Path = '~/Desktop/tst/';
-SavePath = '~/tmp/';
+SavePath = '~/AcuteStrokeResults/';
 
 SubDir = dir(Path);
 SubDir = SubDir(3:end);
@@ -86,18 +90,74 @@ for subject = 1:length(SubDir)
                     end
                     
                     disp(['Subject: ' Sub ' , Session: ' num2str(onses) ' , Run: ' num2str(run)]);
-                    run = run+1;
-                    % Fill in here
-                    
+                    run = run+1;                    
                 end
                 fclose(fid);
             end
         end
         
-        % Session-wise
+    end
+
+    
+    offses64 = 0;
+    for ses=1:length(SubSes)
+        % Check if it is an offline 64ch session
+        SesName = SubSes(ses).name;
+        
+        if( strcmp(SesName(1:5),[Sub '.']) && strcmp(SesName(end-4:end),'_64ch') )
+            offses64 = offses64 + 1;
+            
+            % Load log file
+            LogFile = dir([Path '/' Sub '/' SesName '/*.log']);
+            if(~isempty(LogFile))
+                LogFile = LogFile.name;
+                fid = fopen([Path '/' Sub '/' SesName '/' LogFile]);
+                
+                run=0;
+                while(true)
+                    % Read log line
+                    Line = fgetl(fid);
+                    if(Line == -1)
+                        break;
+                    end
+                    
+                    GDFName = Line(strfind(Line, Sub):strfind(Line, 'gdf')+2);
+                    GDFPath = [Path '/' Sub '/' SesName '/' GDFName];
+                    
+                    if(exist(GDFPath,'file')>0)
+                        ff = dir(GDFPath);
+                        if( (ff.bytes/(1024^2)) < 1.0 ) % Get rid of too small GDFs, probably failed attempts to start the loop or interrupted runs
+                            continue;
+                        end
+                    else
+                        continue;
+                    end
+                    
+                    if( (exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 0) && (exist([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'file') == 0))
+                        RunResults = analyzeOffline64Stroke(GDFPath, lap64, freqs);
+                        if(RunResults.fine == 1)
+                            save([SavePath Sub '/' GDFName(1:end-4) '.mat'],'RunResults');
+                        else
+                            % Save excluded dummy mat file
+                            save([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'RunResults');
+                            continue;
+                        end
+                    else
+                        if(exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 2)
+                            load([SavePath Sub '/' GDFName(1:end-4) '.mat']);
+                        else
+                            % Faulty run saved, skip it
+                            continue;
+                        end
+                    end
+                    
+                    run = run+1;
+                    disp(['Subject: ' Sub ' , Offline 64 Session: ' num2str(offses64) ' , Run: ' num2str(run)]);
+                end
+                fclose(fid);
+            end
+        end
         
     end
     
-    % Subject-wise
-    %save([SavePath Sub '/' Sub '_Acc.mat'],'Sum');
 end
