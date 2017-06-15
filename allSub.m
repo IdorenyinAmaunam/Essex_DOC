@@ -9,11 +9,12 @@ lap = lap.lap;
 lap64 = load('laplacian64HiAmp.mat');
 lap64 = lap64.lap.HiAmp64Mat;
 
-Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
+%Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
+Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2017_AcuteStrokeSanCamillo_PerdikisSerafeim/';
 %Path = '~/Desktop/tst/';
-SavePath = '~/AcuteStrokeResults/';
+SavePath = '~/Data/Results/AcuteStrokeResults/';
 
 SubDir = dir(Path);
 SubDir = SubDir(3:end);

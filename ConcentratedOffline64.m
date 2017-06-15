@@ -1,9 +1,13 @@
 FigureSavePath = '/home/sperdikis/Subversion/simis/trunk/WyssAcuteStroke/img2/';
-Path = '/home/sperdikis/AcuteStrokeResults/';
+Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
 %SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2'};
-SubID  = {'odr2','ckg8'};
-Group  = {'BCI','BCI'};
-Side = {'L','L'};
+%SubID  = {'odr2','ckg8','ckg8'};
+%Group  = {'BCI','BCI','BCI'};
+%Side = {'L','L','R'};
+SubID  = {'rai1'};
+Group  = {'BCI'};
+Side = {'R'};
+
 Electrodes64 = {'FP1','FPz','FP2','AF7','AF3','AF4','AF8','F7','F5','F3',...
     'F1','Fz','F2','F4','F6','F8','FT7','FC5','FC3','FC1',...
     'FCz','FC2','FC4','FC6','FT8','T7','C5','C3','C1','Cz',...

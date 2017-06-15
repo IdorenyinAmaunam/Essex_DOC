@@ -6,6 +6,10 @@ try
     
     % Interpolate NaNs
     data = proc_naninterpolation(data);
+    
+    % Some times (rarely) there are still some NaNs remaining in some
+    % channels Set those to 0
+    data(isnan(data))=0;
 
 catch
     disp(['Problem loading file, skipping: ' FilePath]);
