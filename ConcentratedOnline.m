@@ -1,23 +1,23 @@
 FigureSavePath = '/home/sperdikis/Subversion/simis/trunk/WyssAcuteStroke/img/';
 Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
-SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2','ji34','ao48','pk72','lm90', 'rai1','mo17'};
-Group  = {'BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham','BCI','BCI','Sham','BCI','BCI'};
+SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9'};
+Group  = {'BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham','BCI','BCI','Sham','BCI','BCI','Sham','Sham','Sham'};
 
-Side = {'L','L','L','L','L','L','L','L','R','L','L','R','L','L','R','L'};
+Side = {'L','L','L','L','L','L','L','L','R','L','L','R','L','L','R','L','L','R','L'};
 
 Electrodes16 = {'Fz','FC3','FC1','FCz','FC2','FC4','C3','C1','Cz','C2','C4','CP3','CP1','CPz','CP2','CP4'};
 
 % Clinical outcomes
-FMAUE{1} = [8 0 0 0 0 0  0 23 6  12 30  0 0 4 21 NaN];
-FMAUE{2} = [9 0 8 0 1 10 0 47 32 40 NaN 3 35 9 38 NaN];
+FMAUE{1} = [8 0 0 0 0 0  0 23 6  12 30  0 0 4 21 10 0 25 NaN];
+FMAUE{2} = [9 0 8 0 1 10 0 47 32 40 43 3 35 9 38 10 34 40 NaN];
 FMAdiff = FMAUE{2}-FMAUE{1};
 
-ESS{1} = [48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN];
-ESS{2} = [48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN];
+ESS{1} = [48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN NaN NaN NaN];
+ESS{2} = [48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN NaN NaN NaN];
 ESSdiff = ESS{2}-ESS{1};
 
-BarthelIndex{1} = [25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN];
-BarthelIndex{2} = [40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN];
+BarthelIndex{1} = [25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN NaN NaN NaN];
+BarthelIndex{2} = [40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN NaN NaN NaN];
 BarthelIndexdiff = BarthelIndex{2}-BarthelIndex{1}; 
 
 % Print info for clinical outcome statistical testing
@@ -278,10 +278,10 @@ bar(length(SubID)+1, mean(PS.DetectionRate(find(strcmp(Group,'BCI')))),'b','Line
 errorbar(length(SubID)+1, mean(PS.DetectionRate(find(strcmp(Group,'BCI')))),std2(PS.DetectionRate(find(strcmp(Group,'BCI')))),'b','LineWidth',3);
 bar(length(SubID)+2, mean(PS.DetectionRate(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
 errorbar(length(SubID)+2, mean(PS.DetectionRate(find(strcmp(Group,'Sham')))),std2(PS.DetectionRate(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
-axis([0.5 length(SubID)+2.5 40 101]);
+axis([0.5 length(SubID)+2.5 30 101]);
 line([0.5 length(SubID)+2.5],[50 50],'Color','k','LineWidth',3,'LineStyle','--');
 line([0.5 length(SubID)+2.5],[58 58],'Color','k','LineWidth',3,'LineStyle','--');
-line([length(SubID)+0.5 length(SubID)+0.5],[40 101],'Color','k','LineWidth',3,'LineStyle','--');
+line([length(SubID)+0.5 length(SubID)+0.5],[30 101],'Color','k','LineWidth',3,'LineStyle','--');
 hold off;
 legend({'BCI','Sham'},'FontSize',20);
 xlabel('Participants');
@@ -289,7 +289,7 @@ ylabel('Single-sample online detection rate (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
 set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
-
+xticklabel_rotate([],45,[],'Fontsize',20);
 
 
 %% Hit rate plot
@@ -317,7 +317,7 @@ ylabel('Hit rate (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
 set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
-
+xticklabel_rotate([],45,[],'Fontsize',20);
 
 %% Simulated Accuracy plots
 % Average simulated accuracy (selected) per subject
@@ -490,95 +490,95 @@ set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
 
 
 
-% 
-% %% Per session DP maps for the QR Appendix
-% MaxAbsERSP = 0;
-% for sub=1:length(SubID)
-%     % Find biggest ERSP overall
-%     for ses=1:PS.SesNum(sub)
-%         MaxAbsERSP = max(MaxAbsERSP,max(abs(PS.ERSPSes{sub}{ses}(:))));
-%     end
-% end
-% 
-% close all;
-% for sub=1:length(SubID)
-%     figure(sub);
-%     Nrows = ceil(PS.SesNum(sub)/5);
-%     if(strcmp(Side{sub},'R'))
-%         doflip = 1;
-%     else
-%         doflip = 0;
-%     end
-%     for ses=1:PS.SesNum(sub)
-%         subplot(Nrows, 5, ses);imagesc(flipSide16Matrix(PS.ERSPSes{sub}{ses},doflip),[-1.0 1.0]);
-%         if(ses==1)
-%             colorbar;
-%         end
-%         title(['Session '  num2str(ses)]);
-%         xlabel('Bands (Hz)');
-%         ylabel('Channels');
-%         set(gca,'LineWidth',3,'FontSize',10);
-%         set(gca,'XTick',[1:4:23]);
-%         set(gca,'XTickLabel',[4:8:48]);
-%         set(gca,'YTick',[1:16]);
-%         set(gca,'YTickLabel',Electrodes16);
-%     end
-% end
-% 
 
-
-
+%% Per session DP maps for the QR Appendix
+MaxAbsERSP = 0;
+for sub=1:length(SubID)
+    % Find biggest ERSP overall
+    for ses=1:PS.SesNum(sub)
+        MaxAbsERSP = max(MaxAbsERSP,max(abs(PS.ERSPSes{sub}{ses}(:))));
+    end
+end
 
 close all;
-%% Get some ERSP statistics using the first and last sessions
-% Use only first and last session
-PreERSP = [];
-PostERSP = [];
 for sub=1:length(SubID)
+    figure(sub);
+    Nrows = ceil(PS.SesNum(sub)/5);
     if(strcmp(Side{sub},'R'))
         doflip = 1;
     else
         doflip = 0;
     end
-    PreERSP(sub,:,:) = flipSide16Matrix(PS.ERSPSes{sub}{1},doflip);
-    PostERSP(sub,:,:) = flipSide16Matrix(PS.ERSPSes{sub}{end},doflip);
-end
-
-% Test for desired conditions
-p = [];
-h = [];
-for ch=1:size(PreERSP,2)
-    for fr=1:size(PreERSP,3)
-        
-        % BCI should be significantly different pre-post
-        [h(1,ch,fr) p(1,ch,fr)] = ttest2(PreERSP(IndBCI,ch,fr),PostERSP(IndBCI,ch,fr));
-        % Sham should NOT be significantly different pre-post
-        [h(2,ch,fr) p(2,ch,fr)] = ttest2(PreERSP(IndSham,ch,fr),PostERSP(IndSham,ch,fr));
-        
-        % BCI vs Sham should NOT be different Pre
-        [h(3,ch,fr) p(3,ch,fr)] = ttest2(PreERSP(IndBCI,ch,fr),PreERSP(IndSham,ch,fr));
-        % BCI vs Sham should be different Post        
-        [h(4,ch,fr) p(4,ch,fr)] = ttest2(PostERSP(IndBCI,ch,fr),PostERSP(IndSham,ch,fr));
-        
+    for ses=1:PS.SesNum(sub)
+        subplot(Nrows, 5, ses);imagesc(flipSide16Matrix(PS.ERSPSes{sub}{ses},doflip),[-1.0 1.0]);
+        if(ses==1)
+            colorbar;
+        end
+        title(['Session '  num2str(ses)]);
+        xlabel('Bands (Hz)');
+        ylabel('Channels');
+        set(gca,'LineWidth',3,'FontSize',10);
+        set(gca,'XTick',[1:4:23]);
+        set(gca,'XTickLabel',[4:8:48]);
+        set(gca,'YTick',[1:16]);
+        set(gca,'YTickLabel',Electrodes16);
     end
 end
 
-SelFeatCh=15;
-SelFeatFr=17; % Index, not Hz
-erddiffplot(PreERSP,PostERSP,IndBCI,IndSham,SelFeatCh,SelFeatFr);
 
-SelFeatCh=10;
-SelFeatFr=8; % Index, not Hz
-erddiffplot(PreERSP,PostERSP,IndBCI,IndSham,SelFeatCh,SelFeatFr);
 
-% LocReg{1} = [2 3 7 8 12 13];
-% LocReg{2} = [4 9 14];
-% LocReg{3} = [5 6 10 11 15 16];
-% FrReg{1} = [3 4 5 6];
-% FrReg{2} = [7 8 9 10];
-% FrReg{3} = [11 12 13 14];
+
 % 
-% RegPreERSP = loweResERSP(PreERSP,LocReg,FrReg);
-% RegPostERSP = loweResERSP(PostERSP,LocReg,FrReg);
-
-
+% close all;
+% %% Get some ERSP statistics using the first and last sessions
+% % Use only first and last session
+% PreERSP = [];
+% PostERSP = [];
+% for sub=1:length(SubID)
+%     if(strcmp(Side{sub},'R'))
+%         doflip = 1;
+%     else
+%         doflip = 0;
+%     end
+%     PreERSP(sub,:,:) = flipSide16Matrix(PS.ERSPSes{sub}{1},doflip);
+%     PostERSP(sub,:,:) = flipSide16Matrix(PS.ERSPSes{sub}{end},doflip);
+% end
+% 
+% % Test for desired conditions
+% p = [];
+% h = [];
+% for ch=1:size(PreERSP,2)
+%     for fr=1:size(PreERSP,3)
+%         
+%         % BCI should be significantly different pre-post
+%         [h(1,ch,fr) p(1,ch,fr)] = ttest2(PreERSP(IndBCI,ch,fr),PostERSP(IndBCI,ch,fr));
+%         % Sham should NOT be significantly different pre-post
+%         [h(2,ch,fr) p(2,ch,fr)] = ttest2(PreERSP(IndSham,ch,fr),PostERSP(IndSham,ch,fr));
+%         
+%         % BCI vs Sham should NOT be different Pre
+%         [h(3,ch,fr) p(3,ch,fr)] = ttest2(PreERSP(IndBCI,ch,fr),PreERSP(IndSham,ch,fr));
+%         % BCI vs Sham should be different Post        
+%         [h(4,ch,fr) p(4,ch,fr)] = ttest2(PostERSP(IndBCI,ch,fr),PostERSP(IndSham,ch,fr));
+%         
+%     end
+% end
+% 
+% SelFeatCh=15;
+% SelFeatFr=17; % Index, not Hz
+% erddiffplot(PreERSP,PostERSP,IndBCI,IndSham,SelFeatCh,SelFeatFr);
+% 
+% SelFeatCh=10;
+% SelFeatFr=8; % Index, not Hz
+% erddiffplot(PreERSP,PostERSP,IndBCI,IndSham,SelFeatCh,SelFeatFr);
+% 
+% % LocReg{1} = [2 3 7 8 12 13];
+% % LocReg{2} = [4 9 14];
+% % LocReg{3} = [5 6 10 11 15 16];
+% % FrReg{1} = [3 4 5 6];
+% % FrReg{2} = [7 8 9 10];
+% % FrReg{3} = [11 12 13 14];
+% % 
+% % RegPreERSP = loweResERSP(PreERSP,LocReg,FrReg);
+% % RegPostERSP = loweResERSP(PostERSP,LocReg,FrReg);
+% 
+% 

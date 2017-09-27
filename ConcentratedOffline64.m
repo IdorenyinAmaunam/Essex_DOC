@@ -4,9 +4,9 @@ Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
 %SubID  = {'odr2','ckg8','ckg8'};
 %Group  = {'BCI','BCI','BCI'};
 %Side = {'L','L','R'};
-SubID  = {'rai1'};
-Group  = {'BCI'};
-Side = {'R'};
+SubID  = {'vxd9'};
+Group  = {'Sham'};
+Side = {'L'};
 
 Electrodes64 = {'FP1','FPz','FP2','AF7','AF3','AF4','AF8','F7','F5','F3',...
     'F1','Fz','F2','F4','F6','F8','FT7','FC5','FC3','FC1',...

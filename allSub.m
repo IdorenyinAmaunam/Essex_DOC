@@ -9,6 +9,8 @@ lap = lap.lap;
 lap64 = load('laplacian64HiAmp.mat');
 lap64 = lap64.lap.HiAmp64Mat;
 
+
+%Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
@@ -104,7 +106,7 @@ for subject = 1:length(SubDir)
     for ses=1:length(SubSes)
         % Check if it is an offline 64ch session
         SesName = SubSes(ses).name;
-        
+        SesName
         if( strcmp(SesName(1:5),[Sub '.']) && strcmp(SesName(end-4:end),'_64ch') )
             offses64 = offses64 + 1;
             
