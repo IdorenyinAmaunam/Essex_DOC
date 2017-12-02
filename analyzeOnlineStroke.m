@@ -3,6 +3,14 @@ function [RunResults] = analyzeOnlineStroke(FilePath, MATpath, lap, freqs)
 RunResults.fine = 1;
 try
     [data, header] = sload(FilePath);
+    
+    % Interpolate NaNs
+    data = proc_naninterpolation(data);
+    
+    % Some times (rarely) there are still some NaNs remaining in some
+    % channels Set those to 0
+    data(isnan(data))=0;
+    
 catch
     disp(['Problem loading file, skipping: ' FilePath]);
     RunResults.fine = 0;
@@ -17,8 +25,11 @@ try
     else
         Class = 2;
     end
+    RunResults.analysis = analysis;
 catch
-    disp(['Problem loading classifier mat file: ' MATpath ', skipping: ' FilePath]);
+    disp(['Problem loading classifier mat file: ' MATpath ', skipping.']);
+    analysis = NaN;
+    RunResults.analysis = [];
     RunResults.fine = 0;
     return;
 end
@@ -44,10 +55,37 @@ if (length(cf) < 15)
     return;
 end
 
+% Find durations of trials
+trdur = [];
+for tr=1:length(cf)
+    try
+        if(  (header.EVENT.TYP(cf(tr)+1)==897) || (header.EVENT.TYP(cf(tr)+1)==898) )
+            trdur(tr) = pos(cf(tr)+1)-pos(cf(tr));
+        elseif(header.EVENT.TYP(cf(tr)+1)== 1)
+            % It is impossible to know exactly the end of a timeoue trial since
+            % the timeout was not logged (stupid), but it was normally 7
+            % seconds
+            trdur(tr) = 7*512;
+        else
+            disp(['Something is wrong with the triggers!']);
+            RunResults.fine = 0;
+            return;
+        end
+    catch
+        % Apparently that was the last trial and was a timeout
+        trdur(tr) = 7*512;
+    end
+end
 
-%trials = [pos(cf) pos(cf)+dur(cf) pos(fix) pos(fix)+dur(fix)];
-% Prefer cue as start, otherwise some trials are super short
-trials = [pos(cue) pos(cue)+dur(cue)+dur(cf) pos(fix) pos(fix)+dur(fix)];
+
+% A trial begins with the next window after the one where the trailing (right)
+% edge is adjacent to the 781 trigger
+% Note that the way I use trials to extract ftrials later on, the two edges
+% are not treated in the same way. The first (left) refers to the window's
+% leading (left) edge, while the second (right) refers to the window's
+% trailing (right) edge.
+
+trials = [pos(cf)-512+32 pos(cf)+trdur' pos(fix) pos(fix)+dur(fix)];
 
 % Useful params for PSD extraction with the fast algorithm
 psdshift = 512*0.5*0.5;
@@ -178,23 +216,50 @@ if( (Class==2) && (analysis.settings.task.classes_old(1)==769) )
     analysis.tools.net.gau.M = flip(analysis.tools.net.gau.M);
     analysis.tools.net.gau.C = flip(analysis.tools.net.gau.C);
 end
+
 prob = [];
 actdata = fdata(flbl==1,:);
+
+% Check if data need to be normalized
+if(max(abs(RunResults.analysis.tools.net.gau.M(:))) < 1.0)
+actdata = eegc3_normalize(actdata);
+end
+
 for i=1:size(actdata,1)
     [usl prob(i,:)] = gauClassifier(analysis.tools.net.gau.M, analysis.tools.net.gau.C,...
-        actdata(i,:));
+    actdata(i,:));
 end
+RunResults.actdata = actdata;
 [maxV maxI] = max(prob');
 RunResults.OnDetectionRate = 100*sum(maxI==Class)/size(actdata,1);
+RunResults.probs = prob;
+RunResults.ClassInd = Class;
+RunResults.AllProbDec = maxI;
 
 % Simulated single-sample accuracy with same features
-try
-    fclass = classify(fdata,fdata,flbl);
-    [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
-catch
-    % Sometimes selected features are too correlated for LDA, switch to Naive Bayes...
-    fclass = classify(fdata,fdata,flbl,'diaglinear');
-    [~, ~, RunResults.SimulatedAccSelected] = eegc3_confusion_matrix(flbl+1,fclass+1);
+% Simulated single-sample accuracy with same features
+[~, ~, RunResults.SimulatedAccSelected] = myclassify(fdata,fdata,flbl+1,flbl+1);
+RunResults.SimulatedAccSelectedCV = cvk(fdata,flbl+1,ftrlbl,5,size(fdata,2));
+
+nftrlbl = ftrlbl(flbl==1);
+for ntr=1:length(cf)
+    
+    % Classification of last window
+    tmpc = maxI(nftrlbl==ntr);
+    tmpc = tmpc(end);
+    if(tmpc == Class)
+        RunResults.TrialLastAct(ntr) = 1;
+    else
+        RunResults.TrialLastAct(ntr) = 0;        
+    end
+    
+    % PSD map of last window
+    tmps = intersect(find(atrlbl==ntr),find(albl==1));
+    tmps = tmps(end);
+    RunResults.LastPSDAll(ntr,:,:) = squeeze(RunResults.afeats(tmps,:,:));
+    tmps = intersect(find(ftrlbl==ntr),find(flbl==1));
+    tmps = tmps(end);
+    RunResults.LastPSDclass(ntr,:) = RunResults.fdata(tmps,:);
 end
 
 % % ERD/ERS
@@ -222,7 +287,7 @@ for tr=1:size(trials,1)
     s_base_ersp = squeeze(std(base_ersp,1));
     act_ersp_allsamples = (act_ersp - permute(repmat(m_base_ersp,1,1,size(act_ersp,1)),[3 1 2]))./permute(repmat(s_base_ersp,1,1,size(act_ersp,1)),[3 1 2]);
     act_ersp_allsamples(act_ersp_allsamples>5)=NaN;
-    act_ersp_tr(tr,:,:) = squeeze(nanmean(act_ersp_allsamples));
+    act_ersp_tr(tr,:,:) = squeeze(nanmean(act_ersp_allsamples,1));
 end
 mbase = mbase/size(trials,1);
 bmbase = bmbase/size(trials,1);
@@ -258,6 +323,14 @@ tmpTYP = [header.EVENT.TYP; 1];
 RunResults.IndHit = find(tmpTYP(find(tmpTYP==781)+1)==897);
 RunResults.AvgDurHit = mean(RunResults.DurAll(RunResults.IndHit));
 RunResults.UsedFeat = UsedFeat;
+try
+    RunResults.TrialOutcome = header.EVENT.TYP(find(header.EVENT.TYP==781)+1);
+catch
+    % Means the last one was timeout with no symbol...
+    indtmp = find(header.EVENT.TYP==781);
+    indtmp = indtmp(1:end-1);
+    RunResults.TrialOutcome = [header.EVENT.TYP(indtmp+1) ; -1];
+end
 
 [usl sortedFSInd] = sort(FS(:),'descend');
 sortedFSInd = sortedFSInd(1:5);
@@ -268,8 +341,10 @@ for i=1:length(Bch)
     Bdata1 = [Bdata1  squeeze(afeats(albl==1,Bfr(i),Bch(i)))];
     Bdata0 = [Bdata0  squeeze(afeats(albl==0,Bfr(i),Bch(i)))];
 end
+
 Bdata = [Bdata0 ; Bdata1];
 Blbl = [zeros(size(Bdata0,1),1) ; ones(size(Bdata1,1),1)];
+Btrlbl = [atrlbl(albl==0);atrlbl(albl==1)];
 M1 = mean(Bdata1);
 C1 = cov(Bdata1);
 M0 = mean(Bdata0);
@@ -277,10 +352,17 @@ C0 = cov(Bdata0);
 RunResults.SI = KLNormMulti(M1,C1,M0,C0);
 
 % Simulated single-sample accuracy with best features
-try
-    Bclass = classify(Bdata,Bdata,Blbl);
-    [~, ~, RunResults.SimulatedAccBest] = eegc3_confusion_matrix(Blbl+1,Bclass+1);
-catch
-    Bclass = classify(Bdata,Bdata,Blbl,'diaglinear');
-    [~, ~, RunResults.SimulatedAccBest] = eegc3_confusion_matrix(Blbl+1,Bclass+1);    
-end
+[~, ~, RunResults.SimulatedAccBest] = myclassify(Bdata,Bdata,Blbl+1,Blbl+1);
+RunResults.SimulatedAccBestCV = cvk(Bdata,Blbl+1,Btrlbl,5,size(Bdata,2));
+
+ufeats = afeats;
+Ind01 = union(find(albl==0),find(albl==1));
+ufeats = ufeats(Ind01,:,:);
+ulbl = albl(Ind01);
+utrlbl = atrlbl(Ind01);
+RunResults.ufeats = ufeats;
+RunResults.ulbl = ulbl; 
+RunResults.utrlbl = utrlbl;
+
+% Simulated single-sample accuracy with best features selected in CV
+RunResults.SimulatedAccBestInCVCV = cvk(ufeats,ulbl+1,utrlbl,5,5);

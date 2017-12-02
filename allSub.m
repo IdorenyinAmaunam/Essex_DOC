@@ -31,6 +31,7 @@ for subject = 1:length(SubDir)
     isd = [SubSes(:).isdir];
     SubSes = SubSes(isd);
 
+    
     % Save results file
     if(~exist([SavePath '/' Sub],'dir'))
         % Create subject's folder
