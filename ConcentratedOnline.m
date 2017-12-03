@@ -1,47 +1,47 @@
+addpath(genpath('~/Git/cnbi-smrtrain/'));
 FigureSavePath = '/home/sperdikis/Subversion/simis/trunk/WyssAcuteStroke/img/';
 Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
-SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9'};
-Group  = {'BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham','BCI','BCI','Sham','BCI','BCI','Sham','Sham','Sham'};
 
-Side = {'L','L','L','L','L','L','L','L','R','L','L','R','L','L','R','L','L','R','L'};
+SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9','eo60','ia41','b2sc'};
+Group  = {'BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham','BCI','BCI','Sham','BCI','BCI','Sham','Sham','Sham','Sham','Sham','Sham'};
+Side = {'L','L','L','L','L','L','L','L','R','L','R','R','L','L','R','L','L','R','L','R','L','R'};
 
 Electrodes16 = {'Fz','FC3','FC1','FCz','FC2','FC4','C3','C1','Cz','C2','C4','CP3','CP1','CPz','CP2','CP4'};
 
 % Colors for BCI and Sham
 Color = {[255 40 40]/255,[102 184 184]/255};
 
+nBCI=0;
+nSham=0;
 for s=1:length(Group)
     if(strcmp(Group{s},'BCI'))
-        SubPaperID{s} = ['BCI' num2str(s,'%02d')];
+        nBCI=nBCI+1;
+        SubPaperID{s} = ['BCI' num2str(nBCI,'%02d')];
     else
-        SubPaperID{s} = ['sham' num2str(s-length(find(strcmp(Group,'BCI'))),'%02d')];
+        nSham=nSham+1;
+        SubPaperID{s} = ['sham' num2str(nSham,'%02d')];
     end
 end
-
-
-%  SubID  = {'RU24ON'};
-%  Group  = {'BCI'};
-%  Side = {'R'};
 
 Electrodes16 = {'Fz','FC3','FC1','FCz','FC2','FC4','C3','C1','Cz','C2','C4','CP3','CP1','CPz','CP2','CP4'};
 
 % Clinical outcomes
-FMAUE{1} = [8 0 0 0 0 0  0 23 6  12 30  0 0 4 21 10 0 25 NaN];
-FMAUE{2} = [9 0 8 0 1 10 0 47 32 40 43 3 35 9 38 10 34 40 NaN];
+FMAUE{1} = [8 0 0 0 0  0 0 23  6 12 30  0  0 4 21 10  0 25  4 NaN NaN 10];
+FMAUE{2} = [9 0 8 0 1 10 0 47 32 40 43  3 35 9 38 10 34 40 34 NaN NaN 17];
 FMAdiff = FMAUE{2}-FMAUE{1};
-
-ESS{1} = [48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN NaN NaN NaN];
-ESS{2} = [48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN NaN NaN NaN];
-ESSdiff = ESS{2}-ESS{1};
-
-BarthelIndex{1} = [25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN NaN NaN NaN];
-BarthelIndex{2} = [40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN NaN NaN NaN];
-BarthelIndexdiff = BarthelIndex{2}-BarthelIndex{1}; 
+% 
+% ESS{1} = [48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN NaN NaN NaN];
+% ESS{2} = [48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN NaN NaN NaN];
+% ESSdiff = ESS{2}-ESS{1};
+% 
+% BarthelIndex{1} = [25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN NaN NaN NaN];
+% BarthelIndex{2} = [40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN NaN NaN NaN];
+% BarthelIndexdiff = BarthelIndex{2}-BarthelIndex{1}; 
 
 % Print info for clinical outcome statistical testing
 printCO(FMAUE{1}, FMAUE{2}, Group, 'FMA-UE');
-printCO(ESS{1}, ESS{2}, Group, 'ESS');
-printCO(BarthelIndex{1}, BarthelIndex{2}, Group, 'Barthel Index');
+% printCO(ESS{1}, ESS{2}, Group, 'ESS');
+% printCO(BarthelIndex{1}, BarthelIndex{2}, Group, 'Barthel Index');
 
 for sub=1:length(SubID)
     
@@ -237,9 +237,9 @@ for sub=1:length(SubID)
                 end
                 AllFSSel{end+1} = FSsel;
                 
-                % Percentage of artifact
-                AllArtifactPrctClean = [AllArtifactPrctClean ; RunResults.artifact.clean];
-                AllArtifactPrctNoisy = [AllArtifactPrctNoisy ; RunResults.artifact.noisy];
+                %% Percentage of artifact
+                %AllArtifactPrctClean = [AllArtifactPrctClean ; RunResults.artifact.clean];
+                %AllArtifactPrctNoisy = [AllArtifactPrctNoisy ; RunResults.artifact.noisy];
                 
                 
                 % Simulated hit rates
@@ -318,6 +318,7 @@ for sub=1:length(SubID)
         AllPSDLastMiss = permute(AllPSDLastMiss,[3 1 2]);
         tmpFSLblHit = [ones(size(AllPSDLastHit,1),1) ; 2*ones(size(AllPSDRest,1),1)];
         tmpFSLblMiss = [ones(size(AllPSDLastMiss,1),1) ; 2*ones(size(AllPSDRest,1),1)];
+
         SubResults.FSHit = fisherScore(cat(1,AllPSDLastHit,AllPSDRest),tmpFSLblHit);
         SubResults.FSMiss = fisherScore(cat(1,AllPSDLastMiss,AllPSDRest),tmpFSLblMiss);
         
@@ -622,20 +623,20 @@ set(gca,'LineWidth',3);
 figure(11);imagesc(squeeze(mean(PS.SelFeatMirrorMap(IndBCI,:,:))),[0 0.5])
 figure(12);imagesc(squeeze(mean(PS.SelFeatMirrorMap(FMAdiff(IndBCI)==0,:,:))),[0 0.5])
 figure(13);imagesc(squeeze(mean(PS.SelFeatMirrorMap(FMAdiff(IndBCI)>0,:,:))),[0 0.5])
-
-% Artifact
-figure(5);
-Zth = [0:0.5:3.5];
-bar([mean(PS.ArtPrctC)' mean(PS.ArtPrctN)']);
-
-legend({'Motor Attempt', 'Run'},'FontSize',20);
-set(gca,'XTick',[1:length(Zth)]);
-set(gca,'XTickLabel',Zth,'FontSize',20);
-axis([0 length(Zth)+1 0 80]);
-xlabel('z-score threshold','FontSize',20);
-ylabel('Artifact impact (%)','FontSize',20);
-set(gca,'FontSize',20);
-set(gca,'LineWidth',3);
+% 
+% % Artifact
+% figure(5);
+% Zth = [0:0.5:3.5];
+% bar([mean(PS.ArtPrctC)' mean(PS.ArtPrctN)']);
+% 
+% legend({'Motor Attempt', 'Run'},'FontSize',20);
+% set(gca,'XTick',[1:length(Zth)]);
+% set(gca,'XTickLabel',Zth,'FontSize',20);
+% axis([0 length(Zth)+1 0 80]);
+% xlabel('z-score threshold','FontSize',20);
+% ylabel('Artifact impact (%)','FontSize',20);
+% set(gca,'FontSize',20);
+% set(gca,'LineWidth',3);
 
 % Grand average of trials
 GAIProb = [];
@@ -764,123 +765,142 @@ end
 % set(gca,'LineWidth',3);
 
 %% Recalculate everything according to proper definitions
+RemInd = find(isnan(FMAdiff));
+FMAdiffNoNan = FMAdiff;
+FMAdiffNoNan(RemInd)=[];
+SubIDNoNaN = SubID;
+SubIDNoNaN(RemInd)=[];
+SideNoNaN = Side;
+SideNoNaN(RemInd)=[];
+GroupNoNaN = Group;
+GroupNoNaN(RemInd) = [];
+IndBCINoNan = find(strcmp(GroupNoNaN,'BCI'));
+IndShamNoNan = find(strcmp(GroupNoNaN,'Sham'));
+
 TPR = PS.LastPSDConfMatAll(:,1,1)./(PS.LastPSDConfMatAll(:,1,1) + PS.LastPSDConfMatAll(:,2,1));
-[r p] = corr(TPR,FMAdiff');
+TPR(RemInd)=[];
+[r p] = corr(TPR,FMAdiffNoNan');
 disp(['TPR, r = ' num2str(r) ' , p = ' num2str(p)]);
 TNR = PS.LastPSDConfMatAll(:,2,2)./(PS.LastPSDConfMatAll(:,2,2) + PS.LastPSDConfMatAll(:,1,2));
-[r p] = corr(TNR,FMAdiff');
+TNR(RemInd)=[];
+[r p] = corr(TNR,FMAdiffNoNan');
 disp(['TNR, r = ' num2str(r) ' , p = ' num2str(p)]);
 PPV = PS.LastPSDConfMatAll(:,1,1)./(PS.LastPSDConfMatAll(:,1,1) + PS.LastPSDConfMatAll(:,1,2));
-[r p] = corr(PPV,FMAdiff');
+PPV(RemInd)=[];
+[r p] = corr(PPV,FMAdiffNoNan');
 disp(['PPV, r = ' num2str(r) ' , p = ' num2str(p)]);
 NPV = PS.LastPSDConfMatAll(:,2,2)./(PS.LastPSDConfMatAll(:,2,1) + PS.LastPSDConfMatAll(:,2,2));
-[r p] = corr(NPV,FMAdiff');
+NPV(RemInd)=[];
+[r p] = corr(NPV,FMAdiffNoNan');
 disp(['NPV, r = ' num2str(r) ' , p = ' num2str(p)]);
 ACC = (PS.LastPSDConfMatAll(:,1,1)+PS.LastPSDConfMatAll(:,2,2))./(PS.LastPSDConfMatAll(:,1,1) + PS.LastPSDConfMatAll(:,1,2)+PS.LastPSDConfMatAll(:,2,1) + PS.LastPSDConfMatAll(:,2,2));
-[r p] = corr(ACC,FMAdiff');
+ACC(RemInd)=[];
+[r p] = corr(ACC,FMAdiffNoNan');
 disp(['ACC, r = ' num2str(r) ' , p = ' num2str(p)]);
 F1 = 2./(1./TPR + 1./PPV);
-[r p] = corr(F1,FMAdiff');
+[r p] = corr(F1,FMAdiffNoNan');
 disp(['F1, r = ' num2str(r) ' , p = ' num2str(p)]);
 
 
 TP = PS.LastPSDConfMatAll(:,1,1);
-[r p] = corr(TP,FMAdiff');
+TP(RemInd)=[];
+[r p] = corr(TP,FMAdiffNoNan');
 disp(['TP, r = ' num2str(r) ' , p = ' num2str(p)]);
 FP = PS.LastPSDConfMatAll(:,1,2);
-[r p] = corr(FP,FMAdiff');
+FP(RemInd)=[];
+[r p] = corr(FP,FMAdiffNoNan');
 disp(['FP, r = ' num2str(r) ' , p = ' num2str(p)]);
 FN = PS.LastPSDConfMatAll(:,2,1);
-[r p] = corr(FN,FMAdiff');
+FN(RemInd)=[];
+[r p] = corr(FN,FMAdiffNoNan');
 disp(['FN, r = ' num2str(r) ' , p = ' num2str(p)]);
 TN = PS.LastPSDConfMatAll(:,2,2);
-[r p] = corr(TN,FMAdiff');
+TN(RemInd)=[];
+[r p] = corr(TN,FMAdiffNoNan');
 disp(['TN, r = ' num2str(r) ' , p = ' num2str(p)]);
 
 
-[r p] = corr(PPV+ACC,FMAdiff');
+[r p] = corr(PPV+ACC,FMAdiffNoNan');
 disp(['PPV+ACC, r = ' num2str(r) ' , p = ' num2str(p)]);
 
-
-close all;
-Metric = 100*(PPV+NPV)';
-
-figure(86);
-bar(1,mean(Metric(IndBCI)),'FaceColor',Color{1});hold on;
-bar(2,mean(Metric(IndSham)),'FaceColor',Color{2});
-errorbar([1 2], [mean(Metric(IndBCI)) mean(Metric(IndSham))], [std2(Metric(IndBCI)) std2(Metric(IndSham))],'.k','LineWidth',3);
-[h p] = ttest2(Metric(IndBCI),Metric(IndSham));
-axis([0 3 95 200]);
-sigstar({[1,2]},[p]);
-hold off;
-legend({'BCI','Sham'},'FontSize',30);
-set(gca,'XTick',[1:2]);
-set(gca,'XTickLabel',{'BCI' , 'Sham'},'FontSize',30);
-xlabel('Treatment','FontSize',30);
-ylabel('PPV+NPV (%)','FontSize',30);
-set(gca,'FontSize',30);
-set(gca,'LineWidth',3);
-
-figure(87);
-hold on;
-h = plot(Metric,FMAdiff,'.','Color','k','MarkerSize',40);
-h1 = plot(Metric(IndBCI),FMAdiff(IndBCI)','.','Color',Color{1},'MarkerSize',40);
-h2 = plot(Metric(IndSham),FMAdiff(IndSham)','.','Color',Color{2},'MarkerSize',40);
-hls = lsline;
-set(hls,'LineWidth',4);
-hold off;
-axis([90 180 -3 20]);
-legend([h h1 h2],{'All','BCI','Sham'},'Location','NorthWest','FontSize',40);
-set(gca,'FontSize',40);
-xlabel('PPV+NPV (%)','FontSize',40);
-ylabel('FMA POST-PRE','FontSize',40);
-[r p] = corr(Metric',FMAdiff');
-
-
-Metric = 100*ACC';
-figure(88);
-bar(1,mean(Metric(IndBCI)),'FaceColor',Color{1});hold on;
-bar(2,mean(Metric(IndSham)),'FaceColor',Color{2});
-errorbar([1 2], [mean(Metric(IndBCI)) mean(Metric(IndSham))], [std2(Metric(IndBCI)) std2(Metric(IndSham))],'.k','LineWidth',3);
-[h p] = ttest2(Metric(IndBCI),Metric(IndSham));
-axis([0 3 45 100]);
-sigstar({[1,2]},[p]);
-hold off;
-legend({'BCI','Sham'},'FontSize',40);
-set(gca,'XTick',[1:2]);
-set(gca,'XTickLabel',{'BCI' , 'Sham'},'FontSize',40);
-xlabel('Treatment','FontSize',40);
-ylabel('Accuracy (%)','FontSize',40);
-set(gca,'FontSize',40);
-set(gca,'LineWidth',3);
-
-
-figure(89);
-hold on;
-h = plot(Metric,FMAdiff,'.','Color','k','MarkerSize',50);
-h1 = plot(Metric(IndBCI),FMAdiff(IndBCI)','.','Color',Color{1},'MarkerSize',50);
-h2 = plot(Metric(IndSham),FMAdiff(IndSham)','.','Color',Color{2},'MarkerSize',50);
-%hls = lsline;
-%set(hls,'LineWidth',4);
-Pbci = polyfit(Metric(IndBCI),FMAdiff(IndBCI),1);
-Psham = polyfit(Metric(IndSham),FMAdiff(IndSham),1);
-Pall = polyfit(Metric,FMAdiff,1);
-fbci=@(x)(Pbci(1).*x+Pbci(2));
-fsham=@(x)(Psham(1).*x+Psham(2));
-fall=@(x)(Pall(1).*x+Pall(2));
-plot(Metric(IndBCI),fbci(Metric(IndBCI)),'-','LineWidth',3,'Color',Color{1});
-plot(Metric(IndSham),fsham(Metric(IndSham)),'-','LineWidth',3,'Color',Color{2});
-plot(Metric,fall(Metric),'-k','LineWidth',3);
-hold off;
-%axis([90 180 -3 20]);
-%legend([h h1 h2],{'All','BCI','Sham'},'Location','NorthWest','FontSize',40);
-set(gca,'FontSize',40);
-xlabel('Accuracy (%)','FontSize',40);
-ylabel('\DeltaFMA (score)','FontSize',40);
-[r p] = corr(Metric',FMAdiff');
-
-
-disp('a');
+% 
+% close all;
+% Metric = 100*(PPV+NPV)';
+% 
+% figure(86);
+% bar(1,mean(Metric(IndBCI)),'FaceColor',Color{1});hold on;
+% bar(2,mean(Metric(IndSham)),'FaceColor',Color{2});
+% errorbar([1 2], [mean(Metric(IndBCI)) mean(Metric(IndSham))], [std2(Metric(IndBCI)) std2(Metric(IndSham))],'.k','LineWidth',3);
+% [h p] = ttest2(Metric(IndBCI),Metric(IndSham));
+% axis([0 3 95 200]);
+% sigstar({[1,2]},[p]);
+% hold off;
+% legend({'BCI','Sham'},'FontSize',30);
+% set(gca,'XTick',[1:2]);
+% set(gca,'XTickLabel',{'BCI' , 'Sham'},'FontSize',30);
+% xlabel('Treatment','FontSize',30);
+% ylabel('PPV+NPV (%)','FontSize',30);
+% set(gca,'FontSize',30);
+% set(gca,'LineWidth',3);
+% 
+% figure(87);
+% hold on;
+% h = plot(Metric,FMAdiff,'.','Color','k','MarkerSize',40);
+% h1 = plot(Metric(IndBCI),FMAdiff(IndBCI)','.','Color',Color{1},'MarkerSize',40);
+% h2 = plot(Metric(IndSham),FMAdiff(IndSham)','.','Color',Color{2},'MarkerSize',40);
+% hls = lsline;
+% set(hls,'LineWidth',4);
+% hold off;
+% axis([90 180 -3 20]);
+% legend([h h1 h2],{'All','BCI','Sham'},'Location','NorthWest','FontSize',40);
+% set(gca,'FontSize',40);
+% xlabel('PPV+NPV (%)','FontSize',40);
+% ylabel('FMA POST-PRE','FontSize',40);
+% [r p] = corr(Metric',FMAdiff');
+% 
+% 
+% Metric = 100*ACC';
+% figure(88);
+% bar(1,mean(Metric(IndBCI)),'FaceColor',Color{1});hold on;
+% bar(2,mean(Metric(IndSham)),'FaceColor',Color{2});
+% errorbar([1 2], [mean(Metric(IndBCI)) mean(Metric(IndSham))], [std2(Metric(IndBCI)) std2(Metric(IndSham))],'.k','LineWidth',3);
+% [h p] = ttest2(Metric(IndBCI),Metric(IndSham));
+% axis([0 3 45 100]);
+% sigstar({[1,2]},[p]);
+% hold off;
+% legend({'BCI','Sham'},'FontSize',40);
+% set(gca,'XTick',[1:2]);
+% set(gca,'XTickLabel',{'BCI' , 'Sham'},'FontSize',40);
+% xlabel('Treatment','FontSize',40);
+% ylabel('Accuracy (%)','FontSize',40);
+% set(gca,'FontSize',40);
+% set(gca,'LineWidth',3);
+% 
+% 
+% figure(89);
+% hold on;
+% h = plot(Metric,FMAdiff,'.','Color','k','MarkerSize',50);
+% h1 = plot(Metric(IndBCI),FMAdiff(IndBCI)','.','Color',Color{1},'MarkerSize',50);
+% h2 = plot(Metric(IndSham),FMAdiff(IndSham)','.','Color',Color{2},'MarkerSize',50);
+% %hls = lsline;
+% %set(hls,'LineWidth',4);
+% Pbci = polyfit(Metric(IndBCI),FMAdiff(IndBCI),1);
+% Psham = polyfit(Metric(IndSham),FMAdiff(IndSham),1);
+% Pall = polyfit(Metric,FMAdiff,1);
+% fbci=@(x)(Pbci(1).*x+Pbci(2));
+% fsham=@(x)(Psham(1).*x+Psham(2));
+% fall=@(x)(Pall(1).*x+Pall(2));
+% plot(Metric(IndBCI),fbci(Metric(IndBCI)),'-','LineWidth',3,'Color',Color{1});
+% plot(Metric(IndSham),fsham(Metric(IndSham)),'-','LineWidth',3,'Color',Color{2});
+% plot(Metric,fall(Metric),'-k','LineWidth',3);
+% hold off;
+% %axis([90 180 -3 20]);
+% %legend([h h1 h2],{'All','BCI','Sham'},'Location','NorthWest','FontSize',40);
+% set(gca,'FontSize',40);
+% xlabel('Accuracy (%)','FontSize',40);
+% ylabel('\DeltaFMA (score)','FontSize',40);
+% [r p] = corr(Metric',FMAdiff');
+% 
 
 % close all;
 % figure(1000);
@@ -949,6 +969,7 @@ findCorrWithFMAdiff(cellfun(@minus,PS.ERSPLastHit,PS.ERSPLastMiss,'UniformOutput
 %% Supplementary figure for Nat Comm revision, comment 1.13
 % Average detection rate per subject
 
+close all;clc;
 %% Group colors to look like the existing figures
 h=figure(1);
 hold on;
@@ -966,7 +987,7 @@ errorbar(length(SubID)+2, mean(PS.DetectionRate(find(strcmp(Group,'Sham')))),std
 axis([0.5 length(SubID)+2.5 0 101]);
 %line([0.5 length(SubID)+2.5],[50 50],'Color','k','LineWidth',3,'LineStyle','--');
 %line([0.5 length(SubID)+2.5],[58 58],'Color','k','LineWidth',3,'LineStyle','--');
-line([length(SubID)+0.5 length(SubID)+0.5],[40 101],'Color','k','LineWidth',3,'LineStyle','--');
+line([length(SubID)+0.5 length(SubID)+0.5],[0 101],'Color','k','LineWidth',3,'LineStyle','--');
 hold off;
 legend([hbci(1) hsham(1)],{'BCI','Sham'},'FontSize',20);
 xlabel('Participants');

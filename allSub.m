@@ -1,7 +1,6 @@
 % Parametrization
 freqs = [4:2:48]; % Desired frequency bands for PSD features
 
-
 addpath(genpath('~/Git/cnbi-smrtrain/'));
 lap = load('laplacian16.mat');
 lap = lap.lap;
@@ -15,7 +14,6 @@ lap64 = lap64.lap.HiAmp64Mat;
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
 Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2017_AcuteStrokeSanCamillo_PerdikisSerafeim/';
-%Path = '~/Desktop/tst/';
 SavePath = '~/Data/Results/AcuteStrokeResults/';
 
 SubDir = dir(Path);
