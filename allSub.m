@@ -10,10 +10,16 @@ lap64 = lap64.lap.HiAmp64Mat;
 
 
 %Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
+%Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
+%Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
+% Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2017_AcuteStrokeSanCamillo_PerdikisSerafeim/';
+Path = '/mnt/cnbiserver/cnbi-commun/data/processed/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/initialTests/';
+
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_StrokeMagdeburg_PerdikisSerafeim/good/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeSUVA_PerdikisSerafeim/';
 %Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2016_AcuteStrokeLavigny_PerdikisSerafeim/';
-Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2017_AcuteStrokeSanCamillo_PerdikisSerafeim/';
+%Path = '/mnt/cnbiserver/cnbi-commun/_INBOX/Data/CNBI_2017_AcuteStrokeSanCamillo_PerdikisSerafeim/';
+
 SavePath = '~/Data/Results/AcuteStrokeResults/';
 
 SubDir = dir(Path);
@@ -66,7 +72,7 @@ for subject = 1:length(SubDir)
                     
                     if(exist(GDFPath,'file')>0)
                         ff = dir(GDFPath);
-                        if( (ff.bytes/(1024^2)) < 1.0 ) % Get rid of too small GDFs, probably failed attempts to start the loop or interrupted runs
+                        if( (ff.bytes / (1024^2)) < 1.0 ) % Get rid of too small GDFs, probably failed attempts to start the loop or interrupted runs
                             continue;
                         end
                     else

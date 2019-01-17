@@ -2,9 +2,14 @@ addpath(genpath('~/Git/cnbi-smrtrain/'));
 FigureSavePath = '/home/sperdikis/Subversion/simis/trunk/WyssAcuteStroke/img/';
 Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
 
-SubID  = {'ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00','odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9','eo60','ia41','b2sc'};
-Group  = {'BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham','BCI','BCI','Sham','BCI','BCI','Sham','Sham','Sham','Sham','Sham','Sham'};
-Side = {'L','L','L','L','L','L','L','L','R','L','R','R','L','L','R','L','L','R','L','R','L','R'};
+SubID  = {'qq62','ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00',...
+    'odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9',...
+    'eo60','ia41','b2sc','och9','mdl9','se34','jv20','mnv4'};
+Group  = {'BCI','BCI','Sham','Sham','BCI','BCI','Sham','BCI','BCI','BCI','BCI','Sham',...
+    'BCI','BCI','Sham','BCI','BCI','Sham','Sham','Sham','Sham','Sham','Sham',...
+    'BCI','BCI','BCI','Sham','Sham'};
+Side = {'L','L','L','L','L','L','L','L','L','R','L','R','R','L','L','R','L','L',...
+    'R','L','R','L','R','R','L','L','L','L'};
 
 Electrodes16 = {'Fz','FC3','FC1','FCz','FC2','FC4','C3','C1','Cz','C2','C4','CP3','CP1','CPz','CP2','CP4'};
 
@@ -26,22 +31,22 @@ end
 Electrodes16 = {'Fz','FC3','FC1','FCz','FC2','FC4','C3','C1','Cz','C2','C4','CP3','CP1','CPz','CP2','CP4'};
 
 % Clinical outcomes
-FMAUE{1} = [8 0 0 0 0  0 0 23  6 12 30  0  0 4 21 10  0 25  4 NaN NaN 10];
-FMAUE{2} = [9 0 8 0 1 10 0 47 32 40 43  3 35 9 38 10 34 40 34 NaN NaN 17];
+FMAUE{1} = [NaN 8 0 0 0 0  0 0 23  6 12 30  0  0 4 21 10  0 25  4 NaN NaN 10 8 18 NaN NaN 4];
+FMAUE{2} = [NaN 9 0 8 0 1 10 0 47 32 40 43  3 35 9 38 10 34 40 34 NaN NaN 17 7 18 NaN NaN 4];
 FMAdiff = FMAUE{2}-FMAUE{1};
-% 
-% ESS{1} = [48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN NaN NaN NaN];
-% ESS{2} = [48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN NaN NaN NaN];
-% ESSdiff = ESS{2}-ESS{1};
-% 
-% BarthelIndex{1} = [25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN NaN NaN NaN];
-% BarthelIndex{2} = [40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN NaN NaN NaN];
-% BarthelIndexdiff = BarthelIndex{2}-BarthelIndex{1}; 
+
+ESS{1} = [NaN 48 42 39 48 57 52 57 74 57 72 70 61 57 42 NaN NaN NaN NaN 4 NaN NaN 45 55 62 NaN NaN 57 ];
+ESS{2} = [NaN 48 54 72 64 67 82 61 84 81 84 80 73 93 56 NaN NaN NaN NaN 71 NaN NaN 56 62 74 NaN NaN 58];
+ESSdiff = ESS{2}-ESS{1};
+
+BarthelIndex{1} = [NaN 25 55 5  75 50 10 35 70 50 50 70 15  60  20 NaN NaN NaN NaN 15 NaN NaN 10 45 50 NaN NaN 45];
+BarthelIndex{2} = [NaN 40 60 65 85 60 60 65 85 55 80 70 100 100 40 NaN NaN NaN NaN 50 NaN NaN 5 55 55 NaN NaN 65];
+BarthelIndexdiff = BarthelIndex{2}-BarthelIndex{1};
 
 % Print info for clinical outcome statistical testing
 printCO(FMAUE{1}, FMAUE{2}, Group, 'FMA-UE');
-% printCO(ESS{1}, ESS{2}, Group, 'ESS');
-% printCO(BarthelIndex{1}, BarthelIndex{2}, Group, 'Barthel Index');
+printCO(ESS{1}, ESS{2}, Group, 'ESS');
+printCO(BarthelIndex{1}, BarthelIndex{2}, Group, 'Barthel Index');
 
 for sub=1:length(SubID)
     
@@ -994,7 +999,8 @@ xlabel('Participants');
 ylabel('Single-sample online detection rate (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
-set(gca,'XTickLabel',[SubPaperID 'BCI' 'Sham']);
+%set(gca,'XTickLabel',[SubPaperID 'BCI' 'Sham']);
+set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
 % Maximize the figure before running this
 xticklabel_rotate([],45,[],'Fontsize',20);
 
@@ -1010,9 +1016,9 @@ for sub=1:length(SubID)
     end
 end
 hbci = bar(length(SubID)+1, mean(PS.HitRate(find(strcmp(Group,'BCI')))),'FaceColor',Color{1},'LineWidth',3);
-errorbar(length(SubID)+1, mean(PS.HitRate(find(strcmp(Group,'BCI')))),std2(PS.HitRate(find(strcmp(Group,'BCI')))),'Color',Color{1},'LineWidth',3);
+errorbar(length(SubID)+1, mean(PS.HitRate(find(strcmp(Group,'BCI')))),std2(PS.HitRate(find(strcmp(Group,'BCI')))),'Color','k','LineWidth',3);
 hsham = bar(length(SubID)+2, mean(PS.HitRate(find(strcmp(Group,'Sham')))),'FaceColor',Color{2},'LineWidth',3);
-errorbar(length(SubID)+2, mean(PS.HitRate(find(strcmp(Group,'Sham')))),std2(PS.HitRate(find(strcmp(Group,'Sham')))),'Color',Color{2},'LineWidth',3);
+errorbar(length(SubID)+2, mean(PS.HitRate(find(strcmp(Group,'Sham')))),std2(PS.HitRate(find(strcmp(Group,'Sham')))),'Color','k','LineWidth',3);
 axis([0.5 length(SubID)+2.5 0 101]);
 %line([0.5 length(SubID)+2.5],[50 50],'Color','k','LineWidth',3,'LineStyle','--');
 %line([0.5 length(SubID)+2.5],[58 58],'Color','k','LineWidth',3,'LineStyle','--');
@@ -1023,7 +1029,8 @@ xlabel('Participants');
 ylabel('Hit rate (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
-set(gca,'XTickLabel',[SubPaperID 'BCI' 'Sham']);
+%set(gca,'XTickLabel',[SubPaperID 'BCI' 'Sham']);
+set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
 % Maximize the figure before running this
 xticklabel_rotate([],45,[],'Fontsize',20);
 
@@ -1064,15 +1071,15 @@ h=figure(3);
 hold on;
 for sub=1:length(SubID)
     if(strcmp(Group{sub},'BCI'))
-        bar(sub,PS.SimAccSel(sub),'b','LineWidth',3);
+        bar(sub,PS.SimAccSel(sub),'FaceColor',Color{1},'LineWidth',3);
     else
-        bar(sub,PS.SimAccSel(sub),'r','LineWidth',3);
+        bar(sub,PS.SimAccSel(sub),'FaceColor',Color{2},'LineWidth',3);
     end
 end
-bar(length(SubID)+1, mean(PS.SimAccSel(find(strcmp(Group,'BCI')))),'b','LineWidth',3);
-errorbar(length(SubID)+1, mean(PS.SimAccSel(find(strcmp(Group,'BCI')))),std2(PS.SimAccSel(find(strcmp(Group,'BCI')))),'b','LineWidth',3);
-bar(length(SubID)+2, mean(PS.SimAccSel(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
-errorbar(length(SubID)+2, mean(PS.SimAccSel(find(strcmp(Group,'Sham')))),std2(PS.SimAccSel(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
+bar(length(SubID)+1, mean(PS.SimAccSel(find(strcmp(Group,'BCI')))),'FaceColor',Color{1},'LineWidth',3);
+errorbar(length(SubID)+1, mean(PS.SimAccSel(find(strcmp(Group,'BCI')))),std2(PS.SimAccSel(find(strcmp(Group,'BCI')))),'k','LineWidth',3);
+bar(length(SubID)+2, mean(PS.SimAccSel(find(strcmp(Group,'Sham')))),'FaceColor',Color{2},'LineWidth',3);
+errorbar(length(SubID)+2, mean(PS.SimAccSel(find(strcmp(Group,'Sham')))),std2(PS.SimAccSel(find(strcmp(Group,'Sham')))),'k','LineWidth',3);
 axis([0.5 length(SubID)+2.5 40 101]);
 line([0.5 length(SubID)+2.5],[50 50],'Color','k','LineWidth',3,'LineStyle','--');
 line([0.5 length(SubID)+2.5],[58 58],'Color','k','LineWidth',3,'LineStyle','--');
@@ -1084,22 +1091,23 @@ ylabel('Simulated detection rate (selected) (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
 set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
-
+% Maximize the figure before running this
+xticklabel_rotate([],45,[],'Fontsize',20);
 
 % Average simulated accuracy (best) per subject
 h=figure(4);
 hold on;
 for sub=1:length(SubID)
     if(strcmp(Group{sub},'BCI'))
-        bar(sub,PS.SimAccBest(sub),'b','LineWidth',3);
+        bar(sub,PS.SimAccBest(sub),'FaceColor',Color{1},'LineWidth',3);
     else
-        bar(sub,PS.SimAccBest(sub),'r','LineWidth',3);
+        bar(sub,PS.SimAccBest(sub),'FaceColor',Color{2},'LineWidth',3);
     end
 end
-bar(length(SubID)+1, mean(PS.SimAccBest(find(strcmp(Group,'BCI')))),'b','LineWidth',3);
-errorbar(length(SubID)+1, mean(PS.SimAccBest(find(strcmp(Group,'BCI')))),std2(PS.SimAccBest(find(strcmp(Group,'BCI')))),'b','LineWidth',3);
-bar(length(SubID)+2, mean(PS.SimAccBest(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
-errorbar(length(SubID)+2, mean(PS.SimAccBest(find(strcmp(Group,'Sham')))),std2(PS.SimAccBest(find(strcmp(Group,'Sham')))),'r','LineWidth',3);
+bar(length(SubID)+1, mean(PS.SimAccBest(find(strcmp(Group,'BCI')))),'FaceColor',Color{1},'LineWidth',3);
+errorbar(length(SubID)+1, mean(PS.SimAccBest(find(strcmp(Group,'BCI')))),std2(PS.SimAccBest(find(strcmp(Group,'BCI')))),'k','LineWidth',3);
+bar(length(SubID)+2, mean(PS.SimAccBest(find(strcmp(Group,'Sham')))),'FaceColor',Color{2},'LineWidth',3);
+errorbar(length(SubID)+2, mean(PS.SimAccBest(find(strcmp(Group,'Sham')))),std2(PS.SimAccBest(find(strcmp(Group,'Sham')))),'k','LineWidth',3);
 axis([0.5 length(SubID)+2.5 40 101]);
 line([0.5 length(SubID)+2.5],[50 50],'Color','k','LineWidth',3,'LineStyle','--');
 line([0.5 length(SubID)+2.5],[58 58],'Color','k','LineWidth',3,'LineStyle','--');
@@ -1111,6 +1119,9 @@ ylabel('Simulated detection rate (best) (%)');
 set(gca,'LineWidth',3,'FontSize',20);
 set(gca,'XTick',[1:length(SubID)+2]);
 set(gca,'XTickLabel',[SubID 'BCI' 'Sham']);
+% Maximize the figure before running this
+xticklabel_rotate([],45,[],'Fontsize',20);
+
 
 % 
 % %% ERS/ERS topoplots
