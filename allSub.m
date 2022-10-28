@@ -1,4 +1,6 @@
 % Parametrization of all doc code
+% another test comment
+%change
 freqs = [4:2:48]; % Desired frequency bands for PSD features
 
 addpath(genpath('~/Git/cnbi-smrtrain/'));
