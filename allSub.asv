@@ -1,10 +1,10 @@
-clear;close all;clc; 
+%clear;close all;clc; 
 % Parametrization of all doc code
 % another test comment
 %change
 freqs = [4:2:48]; % Desired frequency bands for PSD features
 
-addpath(genpath('/home/ido/New DOC Literature/DOCpipeline/Code/biosig/'));
+addpath(genpath('../biosig/'));
 lap = load('laplacian16.mat');
 lap = lap.lap;
 
@@ -62,7 +62,7 @@ for subject = 1:length(SubDir)
                 GDFName = Line(1:strfind(Line, 'gdf')+2);
                 GDFPath = [Path '/' Sub '/' SesName '/' GDFName];
               
-             
+                
                 if(exist(GDFPath,'file')>0)
                     ff = dir(GDFPath);
                     if( (ff.bytes / (1024^2)) < 1.0 ) % Get rid of too small GDFs, probably failed attempts to start the loop or interrupted runs
@@ -72,7 +72,7 @@ for subject = 1:length(SubDir)
                     continue;
                 end
                 
-                if( (exist([SavePath Sub '/savedData/' GDFName(1:end-4) '.mat'],'file') == 0) && (exist([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'file') == 0))
+                if( (exist([SavePath Sub '/' GDFName(1:end-4) '.mat'],'file') == 0) && (exist([SavePath Sub '/excluded/' GDFName(1:end-4) '.mat'],'file') == 0))
                     RunResults = analyzeOnlineStroke(GDFPath,lap, freqs);
                     if(RunResults.fine == 1)
                         save([SavePath Sub '/' GDFName(1:end-4) '.mat'],'RunResults');
