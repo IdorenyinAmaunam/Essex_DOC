@@ -15,12 +15,14 @@ lap = lap.lap;
 
 Path = '/home/ido/New DOC Literature/DOCpipeline/Code/code/EEG';
 
-SavePath = '~/home/ido/New DOC Literature/DOCpipeline/Code/code/SavedData/';
+SavePath = '~/New DOC Literature/DOCpipeline/Code/code/SavedData/';
 
 SubDir = dir(Path);
 SubDir = SubDir(3:end);
 isd = [SubDir(:).isdir];
 SubDir = SubDir(isd);
+%SubDir = SubDir(3);
+
 
 for subject = 1:length(SubDir)
     

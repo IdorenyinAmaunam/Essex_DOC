@@ -73,8 +73,8 @@ end
 trials = [pos(cf)-sfreq+32 pos(cf)+trdur' pos(cue)-sfreq*2 pos(cue)];
 
 % Useful params for PSD extraction with the fast algorithm
-psdshift = sfreq*0.5*0.5;
-winshift = sfreq*0.0625; %0.0625; 
+psdshift = sfreq*0.1;
+winshift = sfreq*0.5*0.4; %0.0625; 
 
 if((mod(psdshift,winshift) ~=0) && (mod(winshift,psdshift) ~=0))
     disp(['[eegc3_smr_simloop_fast] The fast PSD method cannot be applied with the current settings!']);
@@ -97,7 +97,7 @@ end
 % Calculate all the internal PSD windows
 for ch=1:16
     %disp(['[eegc3_smr_simloop_fast] Internal PSDs on electrode ' num2str(ch)]);
-    [~,f,t,p(:,:,ch)] = spectrogram(data(:,ch), spec_win, spec_ovl, [], sfreq);
+    [~,f,t,p(:,:,ch)] = spectrogram(data(:,ch), spec_win, spec_ovl, [4:2:48], sfreq);
 end
 
 % Keep only desired frequencies
