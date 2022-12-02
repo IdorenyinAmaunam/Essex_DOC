@@ -21,7 +21,7 @@ SubDir = dir(Path);
 SubDir = SubDir(3:end);
 isd = [SubDir(:).isdir];
 SubDir = SubDir(isd);
-%SubDir = SubDir(3);
+%SubDir = SubDir(1);
 
 
 for subject = 1:length(SubDir)

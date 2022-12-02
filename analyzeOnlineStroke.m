@@ -73,8 +73,13 @@ end
 trials = [pos(cf)-sfreq+32 pos(cf)+trdur' pos(cue)-sfreq*2 pos(cue)];
 
 % Useful params for PSD extraction with the fast algorithm
-psdshift = sfreq*0.1;
-winshift = sfreq*0.5*0.4; %0.0625; 
+if sfreq == 512
+    psdshift = sfreq*0.5*0.5;
+    winshift = sfreq*0.0625; %0.0625;
+else
+    psdshift = sfreq*0.1;
+    winshift = sfreq*0.5*0.4; %0.0625
+end
 
 if((mod(psdshift,winshift) ~=0) && (mod(winshift,psdshift) ~=0))
     disp(['[eegc3_smr_simloop_fast] The fast PSD method cannot be applied with the current settings!']);
