@@ -1,6 +1,6 @@
-addpath(genpath('~/Git/cnbi-smrtrain/'));
-FigureSavePath = '/home/sperdikis/Subversion/simis/trunk/WyssAcuteStroke/img/';
-Path = '/home/sperdikis/Data/Results/AcuteStrokeResults/';
+addpath(genpath('/home/ido/New DOC Literature/DOCpipeline/Code/biosig/'));
+FigureSavePath = '~/New DOC Literature/DOCpipeline/Code/code/SavedData/';
+Path = '/home/ido/New DOC Literature/DOCpipeline/Code/code/EEG';
 
 SubID  = {'qq62','ckg8','ds86','fh47','jy18','ma93','qv39','rj31','wu60','ya00',...
     'odr2','ji34','ao48','pk72','lm90', 'rai1','mo17','cy97','qs36','vxd9',...
